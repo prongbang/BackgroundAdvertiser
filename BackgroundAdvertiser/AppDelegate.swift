@@ -173,19 +173,93 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CBPeripheralManagerDelega
             uuid: serviceUuidString,
             major: 0,
             minor: 100,
-            identifier: "dummy"
+            identifier: serviceUuidString
         )
         peripheralManager?.stopAdvertising()
         let uuid = UUID(uuidString: beacon.uuid)!
         let localBeacon = CLBeaconRegion(proximityUUID: uuid, major: beacon.major, minor: beacon.minor, identifier: beacon.identifier)
         beaconPeripheralData = localBeacon.peripheralData(withMeasuredPower: nil)
+        let manufacturerData = beaconPeripheralData["kCBAdvDataAppleBeaconKey"]
+        //print("manufacturerData: \(beaconPeripheralData)")
+        
     }
     
     func updateAdvertisement() {
-        let serviceUuid = CBUUID(string: serviceUuidString)
-        peripheralManager?.stopAdvertising()
-        let adData = [CBAdvertisementDataServiceUUIDsKey : [serviceUuid]] as [String : Any]
-        peripheralManager?.startAdvertising(adData)
+//        let serviceUuid = CBUUID(string: serviceUuidString)
+//        peripheralManager?.stopAdvertising()
+////        var byteArray = [UInt8]()
+//        let adData = [
+//            CBAdvertisementDataServiceUUIDsKey : [serviceUuid],
+////            CBAdvertisementDataManufacturerDataKey: byteArray
+////            CBAdvertisementDataOverflowServiceUUIDsKey: [serviceUuid]
+////            CBAdvertisementDataLocalNameKey: ["test-LocalName"],
+////            CBAdvertisementDataSolicitedServiceUUIDsKey: ["uuid-SolicitedServiceUUID"]
+//        ] as [String : Any]
+//        peripheralManager?.startAdvertising(adData)
+        
+        
+//        let binaryString = OverflowAreaUtils.overflowServiceUuidsToBinaryString(overflowUuids: [serviceUuid])
+//        let overflowUuid = OverflowAreaUtils.binaryStringToOverflowServiceUuids(binaryString: binaryString)
+//        print("overflowUuid: \(overflowUuid)")
+        
+        backgroundBeaconManager.matchingByte = 0xaa // 170
+        backgroundBeaconManager.startAdvertising(beaconBytes: [0x01, 0x02, 0x03, 0x04])
+        
+//        0x01, 0x02, 0x03, 0x04, 0x05, 0x06
+//        adData(Optional(18)): Optional([
+//        00000000-0000-0000-0000-00000000007C,
+//        00000000-0000-0000-0000-00000000003E,
+//        00000000-0000-0000-0000-00000000001B,
+//        00000000-0000-0000-0000-000000000009,
+//        00000000-0000-0000-0000-000000000042,
+//        00000000-0000-0000-0000-00000000003F,
+//        00000000-0000-0000-0000-00000000002D,
+//        00000000-0000-0000-0000-000000000051,
+//        00000000-0000-0000-0000-000000000019,
+//        00000000-0000-0000-0000-00000000000A,
+//        00000000-0000-0000-0000-000000000053,
+//        00000000-0000-0000-0000-000000000018,
+//        00000000-0000-0000-0000-000000000055,
+//        00000000-0000-0000-0000-000000000062,
+//        00000000-0000-0000-0000-00000000000F,
+//        00000000-0000-0000-0000-000000000073,
+//        00000000-0000-0000-0000-000000000045,
+//        00000000-0000-0000-0000-000000000072])
+//
+//        0x01, 0x02, 0x03, 0x04
+//        adData(Optional(15)): Optional([
+//        00000000-0000-0000-0000-00000000007C,
+//        00000000-0000-0000-0000-000000000075,
+//        00000000-0000-0000-0000-000000000067,
+//        00000000-0000-0000-0000-00000000001B,
+//        00000000-0000-0000-0000-000000000009,
+//        00000000-0000-0000-0000-00000000003F,
+//        00000000-0000-0000-0000-00000000002D,
+//        00000000-0000-0000-0000-000000000051,
+//        00000000-0000-0000-0000-000000000008,
+//        00000000-0000-0000-0000-000000000019,
+//        00000000-0000-0000-0000-00000000000A,
+//        00000000-0000-0000-0000-000000000053,
+//        00000000-0000-0000-0000-000000000018,
+//        00000000-0000-0000-0000-000000000055,
+//        00000000-0000-0000-0000-000000000062])
+        
+//        let byteArray : [UInt8] = [ 0x25, 0x99, 0xf3 ]
+//        print(StringMisc.byteArrayToHexString([0xA2, 0xCB, 0xD1, 0xCC, 0xE9, 0xD4, 0x44, 0x1A, 0x91, 0xD4, 0x8C, 0x6E, 0xE9, 0x69, 0x5E, 0x06] as [UInt8]))
+//        print(StringMisc.byteArrayToHexString(byteArray) == "2599F3")
+        
+//        let beacon = Beacon(
+//            uuid: serviceUuidString,
+//            major: 0,
+//            minor: 100,
+//            identifier: "dummy"
+//        )
+//        let uuid = UUID(uuidString: beacon.uuid)!
+//        let region = CLBeaconRegion(proximityUUID: uuid,
+//                                    major: beacon.major, minor: beacon.minor,
+//                                    identifier: beacon.identifier)
+//        let advertisementData = region.peripheralData(withMeasuredPower: nil)
+//        peripheralManager?.startAdvertising(advertisementData as? [String : Any])
     }
     
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
@@ -195,7 +269,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CBPeripheralManagerDelega
                 if peripheral.state == CBManagerState.poweredOn {
                     self.peripheralManager?.startAdvertising(self.beaconPeripheralData as? [String: Any])
                     print("Advertising: \(self.serviceUuidString)")
-                } else{
+                } else {
                     self.peripheralManager?.stopAdvertising()
                 }
             }

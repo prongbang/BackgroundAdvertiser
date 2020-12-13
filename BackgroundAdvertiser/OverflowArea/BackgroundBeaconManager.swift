@@ -37,7 +37,7 @@ class BackgroundBeaconManager {
     private init() {
     }
 
-    public func extractBeaconBytes(peripheral: CBPeripheral, advertisementData: [String : Any], countToExtract: Int) -> [UInt8]? {
+    public func extractBeaconBytes(peripheral: CBPeripheral?, advertisementData: [String : Any], countToExtract: Int) -> [UInt8]? {
         let start = Date().timeIntervalSince1970
         var payload: [UInt8]? = nil
         if let overflowAreaBytes = OverflowAreaUtils.extractOverflowAreaBytes(advertisementData: advertisementData) {
@@ -100,6 +100,13 @@ class BackgroundBeaconManager {
         let adData = [CBAdvertisementDataServiceUUIDsKey : OverflowAreaUtils.bitsToOverflowServiceUuids(bits: overflowAreaBits)]
         peripheralManager.stopAdvertising()
         peripheralManager.startAdvertising(adData)
+        print("overflowAreaBits(\(overflowAreaBits.count)): \(overflowAreaBits)")
+        var binary = ""
+        for item in overflowAreaBits {
+            binary += "\(item)"
+        }
+        print("binary: \(binary)")
+        print("adData(\(adData["kCBAdvDataServiceUUIDs"]?.count)): \(adData["kCBAdvDataServiceUUIDs"])")
     }
 
 
