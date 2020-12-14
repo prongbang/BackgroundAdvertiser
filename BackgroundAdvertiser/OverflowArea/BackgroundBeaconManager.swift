@@ -100,7 +100,8 @@ class BackgroundBeaconManager {
         let adData = [CBAdvertisementDataServiceUUIDsKey : OverflowAreaUtils.bitsToOverflowServiceUuids(bits: overflowAreaBits)]
         peripheralManager.stopAdvertising()
         peripheralManager.startAdvertising(adData)
-        print("overflowAreaBits(\(overflowAreaBits.count)): \(overflowAreaBits)")
+        
+        // TODO logging
         var binary = ""
         for item in overflowAreaBits {
             binary += "\(item)"
